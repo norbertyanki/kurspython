@@ -1,0 +1,40 @@
+import requests
+import time
+from datetime import date
+
+# i=0
+
+# while True:
+#     try:
+#         r = requests.get('https://api.exchangeratesapi.io/latest')
+#         print("Czas zapytania:",r.elapsed.total_seconds())
+#         print (r.text)
+#         print (i)
+#         i +=1
+#         time.sleep(1)
+#         if i==10:
+#             break
+#     except:
+#         print ('coś nie tak')
+#         break
+
+
+def post():
+    r = requests.get('https://api.exchangeratesapi.io/latest?base=USD')
+    print('Dane:',r.text)
+    print("Czas trwania zapytania:", r.elapsed.total_seconds())
+    print("Data:",date.today())
+  
+
+
+def run(function):
+    x=0
+  while x in range(1,9):
+      def wrapper():
+            function()
+        time.sleep(1)
+        return wrapper() 
+        x+=1
+    
+                   
+run(post)
