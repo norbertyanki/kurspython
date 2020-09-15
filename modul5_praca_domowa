@@ -1,40 +1,32 @@
 import requests
+from datetime import datetime
 import time
-from datetime import date
 
-# i=0
-
-# while True:
-#     try:
-#         r = requests.get('https://api.exchangeratesapi.io/latest')
-#         print("Czas zapytania:",r.elapsed.total_seconds())
-#         print (r.text)
-#         print (i)
-#         i +=1
-#         time.sleep(1)
-#         if i==10:
-#             break
-#     except:
-#         print ('coś nie tak')
-#         break
+from selenium.common.exceptions import TimeoutException
 
 
-def post():
-    r = requests.get('https://api.exchangeratesapi.io/latest?base=USD')
-    print('Dane:',r.text)
-    print("Czas trwania zapytania:", r.elapsed.total_seconds())
-    print("Data:",date.today())
-  
+def exchange_rate_checker():
+    try:
+        d = datetime.now()
+        request = requests.get('https://api.exchangeratesapi.io/latest?symbols=PLN')
+        rate = request.json()
+        print(rate['rates'])
+        print('Data i godzina: ', d.year, '.', d.month, '.', d.day, d.hour, ':', d.minute, ':', d.second)
+        duration = datetime.now() - d
+        duration_in_ms = int(duration.microseconds / 1000)
+        print('Czas trwania zapytania :',duration_in_ms , 'ms')
+
+    except TimeoutException:
+        print('Timeout Exception')
 
 
-def run(function):
-    x=0
-  while x in range(1,9):
-      def wrapper():
-            function()
-        time.sleep(1)
-        return wrapper() 
-        x+=1
-    
-                   
-run(post)
+def decor(function):
+    def inside_function():
+        print('---------------------------')
+        return function
+    return inside_function()
+
+
+while True:
+    decor(exchange_rate_checker())
+    time.sleep(15)
